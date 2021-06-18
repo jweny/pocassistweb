@@ -1,16 +1,16 @@
 import request from "../utils/request";
 
 export interface RuleRunReqMsg {
-  header: string,
-  body: string,
+  header: string;
+  body: string;
 }
 
 export interface RuleRunResult {
-  vulnerable: boolean,
-  target: string,
-  output: string,
-  req_msg: RuleRunReqMsg,
-  resp_msg: RuleRunReqMsg,
+  vulnerable: boolean;
+  target: string;
+  output: string;
+  req_msg: RuleRunReqMsg;
+  resp_msg: RuleRunReqMsg;
 }
 
 export interface RuleDataProps {
@@ -20,6 +20,7 @@ export interface RuleDataProps {
   affects: string;
   enable: boolean;
   description: number;
+  desp_name: string;
 }
 
 export interface JsonPoc {
@@ -42,6 +43,7 @@ export interface Rules {
  * 获取漏洞规则列表
  * @param params
  */
+
 export const getRuleList = (params: {
   page: number;
   pagesize: number;
@@ -104,6 +106,39 @@ export const deleteRule = (id?: number) => {
 export const testRule = (data?: any) => {
   return request({
     url: `/v1/poc/run/`,
+    method: "post",
+    data
+  });
+};
+
+/**
+ * 测试url规则
+ */
+export const batchTestUrl = (data?: any) => {
+  return request({
+    url: `/v1/scan/url/`,
+    method: "post",
+    data
+  });
+};
+
+/**
+ * 测试raw规则
+ */
+export const batchTestRaw = (data?: any) => {
+  return request({
+    url: `/v1/scan/raw/`,
+    method: "post",
+    data
+  });
+};
+
+/**
+ * 测试url list规则
+ */
+export const batchTestList = (data?: any) => {
+  return request({
+    url: `/v1/scan/list/`,
     method: "post",
     data
   });

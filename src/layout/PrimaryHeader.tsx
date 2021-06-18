@@ -67,7 +67,7 @@ const PrimaryHeader: React.FC = props => {
         >
           <div className="ant-dropdown-link">
             <div>
-              欢迎，{getUserInfo().name}
+              欢迎，{getUserInfo()?.name}
               {/*<DownOutlined*/}
               {/*  style={{ fontSize: 12, marginLeft: 10, lineHeight: "20px" }}*/}
               {/*/>*/}

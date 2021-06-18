@@ -20,10 +20,13 @@ const Login: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
     const { captcha_value, ...rest } = values;
     login(rest).then(res => {
       setToken(res?.data?.token);
-      getUserInfos().then(res => {
-        setUserInfo(res.data);
-      });
-      history.push("/vul");
+      getUserInfos()
+        .then(res => {
+          setUserInfo(res.data);
+        })
+        .finally(() => {
+          history.push("/poc");
+        });
     });
   };
   return (

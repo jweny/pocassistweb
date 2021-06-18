@@ -38,7 +38,6 @@ interface AddVulProps extends ModalProps {
   type?: string;
 }
 const VulModal: React.FC<AddVulProps> = props => {
-  // console.log(props);
   let { selected, type = "vul" } = props;
   const testRef = useRef(null);
   const [step, setStep] = useState<number>(1);
@@ -198,7 +197,6 @@ const VulModal: React.FC<AddVulProps> = props => {
       writer_id: userInfo?.id,
       ...xml
     };
-    // console.log(finalData);
     vulApi(finalData, vulData?.id || vulAddId)
       .then(res => {
         setVulAddId(res.data.id);
@@ -207,10 +205,10 @@ const VulModal: React.FC<AddVulProps> = props => {
           ...state.search_query,
           page: state.page,
           pagesize: state.pagesize
-          // search_query: JSON.stringify(state.search_query)
         }).then(res => {
           dispatch({ type: "SET_LIST", payload: res.data.data });
           dispatch({ type: "SET_TOTAL", payload: res.data.total });
+          handleCancel();
         });
       })
       .finally(() => {
@@ -219,7 +217,6 @@ const VulModal: React.FC<AddVulProps> = props => {
   };
 
   const handleAddProduct = (val: any) => {
-    // console.log(val);
     createProduct(val).then(res => {
       setAddProduct(false);
       getProductList({ page: 1, pagesize: 9999 }).then(res => {
@@ -228,7 +225,10 @@ const VulModal: React.FC<AddVulProps> = props => {
       form.setFieldsValue({ product: res.data.id });
     });
   };
-
+  const handleCancel = (e: any = {}) => {
+    handleStepChange(1);
+    props.onCancel && props.onCancel(e);
+  };
 
   const height = document.documentElement.offsetHeight;
 
@@ -236,11 +236,11 @@ const VulModal: React.FC<AddVulProps> = props => {
     <Modal
       {...props}
       destroyOnClose
-      // forceRender
       maskClosable={false}
       onCancel={e => {
-        handleStepChange(1);
-        props.onCancel && props.onCancel(e);
+        // handleStepChange(1);
+        // props.onCancel && props.onCancel(e);
+        handleCancel(e);
       }}
       footer={
         <div>
@@ -361,6 +361,5 @@ const VulModal: React.FC<AddVulProps> = props => {
     </Modal>
   );
 };
-
 
 export default VulModal;

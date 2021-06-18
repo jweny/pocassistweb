@@ -4,19 +4,10 @@ import React, {
   useImperativeHandle,
   useState
 } from "react";
-import {
-  Button,
-  Col,
-  Input,
-  Radio,
-  Row,
-  Table,
-} from "antd";
+import { Button, Col, Input, Radio, Row, Table } from "antd";
 import { ColumnProps } from "antd/es/table";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons/lib";
-import TestComponent, {
-  TestComponentProps
-} from "./TestComponent";
+import TestComponent, { TestComponentProps } from "./TestComponent";
 
 interface RunTestProps {
   testData: any; //默认值
@@ -39,7 +30,8 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
   const [formData, setFormData] = useState<{
     name: string;
     type: string;
-  }>({ name: "", type: "rules" });
+    params: string;
+  }>({ name: "", type: "rules", params: "" });
   // 运行测试结果
   const [testResult, setTestResult] = useState<any>([]);
   // 展示测试结果Modal框
@@ -72,6 +64,7 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
 
       setFormData({
         name: testData.name,
+        params: Array.isArray(testData.params) ? testData.params.join(",") : "",
         type: testData.hasOwnProperty("rules") ? "rules" : "groups"
       });
     } else {
@@ -166,13 +159,16 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
       }
     }
   ];
+
   const handleAddItem = () => {
     setItemData(prevState => [...prevState, { key: getId() }]);
   };
+
   const handleDeleteItem = (key: string) => {
     // console.log(itemData, key);
     setItemData(prevState => prevState.filter(item => item.key !== key));
   };
+
   const handleItemChange = (
     val: string,
     type: string,
@@ -201,11 +197,10 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
   };
   // ref转发
   const getRunTestData = useCallback(() => {
-    // TODO 从runtest取值应该没问题了，rules的增删还没做，目前只是用现有数据修改的，从0添加一个规则还没测过
-    console.log(data, "------", groupData, "--------", itemData);
     let json_poc: any = {};
     json_poc.name = formData.name;
     json_poc.set = itemDataFormatter(itemData);
+    json_poc.params = formData.params.replace("，", ",").split(",");
     if (formData.type === "rules") {
       json_poc.rules = groupData[0]?.data?.map((item: any) => {
         const { id, ...rest } = item;
@@ -269,6 +264,24 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
           </Radio.Group>
         </Col>
       </Row>
+      <Row>
+        <Col span={3} className="rt-url-label">
+          参数 Payload：
+        </Col>
+        <Col span={14}>
+          <Input.TextArea
+            value={formData?.params}
+            onChange={e => {
+              e.persist();
+              setFormData(prevState => ({
+                ...prevState,
+                params: e.target.value
+              }));
+            }}
+            placeholder="多个参数请使用,分隔"
+          />
+        </Col>
+      </Row>
       <Button type="link" onClick={handleAddItem}>
         添加变量 <PlusOutlined />
       </Button>
@@ -278,6 +291,7 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
         </Button>
       )}
       {/*item列表*/}
+      {itemData?.length > 0 && <h3>Set：</h3>}
       {itemData?.length > 0 && (
         <Table dataSource={itemData} pagination={false} columns={columns} />
       )}

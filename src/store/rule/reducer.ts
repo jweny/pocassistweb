@@ -3,11 +3,13 @@ import { ActionProps } from "../global/reducer";
 import { ProductDataProps } from "../../api/webapp";
 import { RuleDataProps } from "../../api/rule";
 
+// 对应api的basic
 interface BasicProps {
   name: string;
   label: string;
   remarks?: string;
 }
+
 export interface RuleStateProps {
   search_query: {
     moduleField?: string;

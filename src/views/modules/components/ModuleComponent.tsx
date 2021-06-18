@@ -1,18 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Popconfirm,
-  Space,
-  Table
-} from "antd";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, Form, Input, message, Popconfirm, Space, Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons/lib";
 import CustomColumns from "../../../components/CustomColumns";
 import { allProductColumns } from "./columns";
@@ -39,7 +26,6 @@ interface ModuleComponentProps {
 
 const ModuleComponent: React.FC<ModuleComponentProps> = props => {
   const [form] = Form.useForm();
-  // 因为要翻译一下script_type，因此将script的columns在当前组件中定义，并通过接口获取type的数组
   const [scriptType, setScriptType] = useState<any[]>([]);
 
   const allScriptColumns = useMemo(

@@ -51,6 +51,7 @@ const VulTable: React.FC<VulComponentProps> = props => {
     {
       title: "序号",
       dataIndex: "order",
+      width: '8%',
       render: (value, record, index) => index + 1
     },
     ...columns,

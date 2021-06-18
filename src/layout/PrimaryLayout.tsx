@@ -10,6 +10,8 @@ import globalReducer from "../store/global/reducer";
 import { getToken } from "../utils/auth";
 import UnAuthLayout from "./UnAuthLayout";
 
+const {Footer} = Layout
+
 const PrimaryLayout: React.FC = props => {
   const [state, dispatch] = useReducer(globalReducer, defaultVale);
   const token = getToken();
@@ -28,6 +30,9 @@ const PrimaryLayout: React.FC = props => {
           <div className="main-content">
             <BasicLayout />
           </div>
+          <Footer style={{ textAlign: 'center' }}>
+            POCASSIST ©2021 Created by <a href="https://github.com/jweny">jweny</a>
+          </Footer>
         </Layout>
       </Layout>
     </GlobalContext.Provider>

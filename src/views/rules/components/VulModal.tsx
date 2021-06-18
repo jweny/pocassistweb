@@ -4,6 +4,7 @@ import {
   Alert,
   Button,
   Col,
+  Descriptions,
   Form,
   Input,
   message,
@@ -17,10 +18,7 @@ import {
 import { ModalProps } from "antd/es/modal";
 import { FormColumnProps } from "./SearchForm";
 import RunTest, { getId } from "./RunTest";
-import {
-  getVulList,
-  VulDataProps
-} from "../../../api/vul";
+import { getVulList, VulDataProps } from "../../../api/vul";
 import { getUserInfo } from "../../../utils/auth";
 import "braft-editor/dist/index.css";
 import {
@@ -89,7 +87,7 @@ const VulModal: React.FC<AddVulProps> = props => {
     console.log(finalData);
     vulApi(finalData, ruleData?.id || vulAddId)
       .then((res: any) => {
-        setVulAddId(res.data.id);
+        setVulAddId(res?.data?.id);
         message.success(`保存成功`);
         getRuleList({
           ...state.search_query,
@@ -99,6 +97,8 @@ const VulModal: React.FC<AddVulProps> = props => {
         }).then(res => {
           dispatch({ type: "SET_LIST", payload: res.data.data });
           dispatch({ type: "SET_TOTAL", payload: res.data.total });
+          //@ts-ignore
+          props.onCancel && props.onCancel();
         });
       })
       .finally(() => {
@@ -128,17 +128,62 @@ const VulModal: React.FC<AddVulProps> = props => {
       });
   };
 
+  const renderTestResult = (record: any) => {
+    console.log(record);
+    const { req_msg, resp_msg } = record;
+
+    return (
+        <div>
+          <Descriptions bordered>
+            {record?.target && (
+                <Descriptions.Item label="URL" span={3}>
+                  {record?.target}
+                </Descriptions.Item>
+            )}
+            <Descriptions.Item label="是否漏洞" span={3}>
+              {String(record?.vulnerable)}
+            </Descriptions.Item>
+            {record?.output && (
+                <Descriptions.Item label="额外说明" span={3}>
+                  <span style={{ whiteSpace: "pre-wrap" }}>{record?.output}</span>
+                </Descriptions.Item>
+            )}
+            {req_msg &&
+            req_msg.map((item: string, index: number) => {
+              return (
+                  <React.Fragment key={index}>
+                    <Descriptions.Item label={`Request${index + 1}`} span={3}>
+                      <span style={{ whiteSpace: "pre-wrap" }}>{item}</span>
+                    </Descriptions.Item>
+                    <Descriptions.Item label={`Response${index + 1}`} span={3}>
+                     <span style={{ whiteSpace: "pre-wrap" }}>
+                       {resp_msg[index]}
+                     </span>
+                    </Descriptions.Item>
+                  </React.Fragment>
+              );
+            })}
+          </Descriptions>
+        </div>
+    );
+  };
+
   const formColumns: FormColumnProps[] = [
     {
       name: "vul_id",
-      label: "漏洞编号(poc-db-)"
-    },
+      label: "漏洞编号",
+      render: () => {
+        return (
+            <Input placeholder="漏洞编号无需输入 自动生成" disabled={true}/>
+        );
+      }
+      },
     {
       name: "affects",
       label: "规则类型",
       render: () => {
         return (
-          <Select placeholder="请选择" style={{ width: 300 }}>
+          <Select placeholder="选择类型" style={{ width: 300 }}>
             {state.basic?.ModuleAffects.map(item => {
               return (
                 <Select.Option value={item.name} key={item.name}>
@@ -239,7 +284,6 @@ const VulModal: React.FC<AddVulProps> = props => {
       }}
     >
       <Spin spinning={loading}>
-        {/*{step === 1 && (*/}
         <Form
           {...formItemLayout}
           form={form}
@@ -282,8 +326,7 @@ const VulModal: React.FC<AddVulProps> = props => {
         className="test-result-wrap"
       >
         <Spin spinning={loading} size="large">
-          {/*<div style={{ minHeight: 500 }}>{JSON.stringify(testResult)}</div>*/}
-          <ReactJson src={testResult} name={false} displayDataTypes={false}/>
+          {renderTestResult(testResult)}
         </Spin>
       </Modal>
     </Modal>

@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Input,
-  Modal,
-  Popconfirm,
-  Space,
-  Tabs
-} from "antd";
+import { Button, Input, Modal, Popconfirm, Space, Tabs } from "antd";
 import { getId } from "./RunTest";
 import RuleComponent from "./RuleComponent";
 

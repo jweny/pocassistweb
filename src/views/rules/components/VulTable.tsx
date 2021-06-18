@@ -13,6 +13,7 @@ import {
   getRuleList,
   RuleDataProps
 } from "../../../api/rule";
+import TestModal from "./TestModal";
 
 const VulTable: React.FC<VulComponentProps> = props => {
   const allColumns = getAllColumns();
@@ -25,6 +26,8 @@ const VulTable: React.FC<VulComponentProps> = props => {
   const [selected, setSelected] = useState<RuleDataProps | undefined>(
     undefined
   );
+  // const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
+  // const [batchTestShow, setBatchTestShow] = useState<boolean>(false);
 
   const { state, dispatch } = useContext(RuleContext);
 
@@ -53,6 +56,7 @@ const VulTable: React.FC<VulComponentProps> = props => {
     {
       title: "序号",
       dataIndex: "order",
+      width: '8%',
       render: (value, record, index) => index + 1
     },
     ...columns,
@@ -119,11 +123,22 @@ const VulTable: React.FC<VulComponentProps> = props => {
         setLoading(false);
       });
   };
+
+  // const onSelectChange = (selectedRowKeys: any[]) => {
+  //   console.log("selectedRowKeys changed: ", selectedRowKeys);
+  //   setSelectedRowKeys(selectedRowKeys);
+  // };
+  //
+  // const handleBatchTest = () => {
+  //   console.log(selectedRowKeys);
+  // };
+
   const width = document.documentElement.offsetWidth;
+
   return (
     <div className="vul-manage-table">
       <div className="vul-controller">
-        <Space>
+        {/*<Space>*/}
           <Button
             icon={<PlusOutlined />}
             type="primary"
@@ -131,7 +146,16 @@ const VulTable: React.FC<VulComponentProps> = props => {
           >
             新建poc
           </Button>
-        </Space>
+          {/*<Button*/}
+          {/*  icon={<PlusOutlined />}*/}
+          {/*  type="primary"*/}
+          {/*  onClick={() => {*/}
+          {/*    setBatchTestShow(true);*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  批量测试*/}
+          {/*</Button>*/}
+        {/*</Space>*/}
         <CustomColumns
           className="custom-btn"
           allColumns={allColumns}
@@ -144,6 +168,10 @@ const VulTable: React.FC<VulComponentProps> = props => {
         dataSource={state.list}
         rowKey="id"
         loading={loading}
+        // rowSelection={{
+        //   selectedRowKeys,
+        //   onChange: onSelectChange
+        // }}
         pagination={{
           current: state.page,
           pageSize: state.pagesize,
@@ -165,6 +193,13 @@ const VulTable: React.FC<VulComponentProps> = props => {
           type="vul"
         />
       )}
+      {/*{batchTestShow && (*/}
+      {/*  <TestModal*/}
+      {/*    visible={batchTestShow}*/}
+      {/*    title="批量测试"*/}
+      {/*    onCancel={() => setBatchTestShow(false)}*/}
+      {/*  />*/}
+      {/*)}*/}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import { ColumnProps } from "antd/es/table";
 import { FormColumnProps } from "./SearchForm";
 import { RuleDataProps } from "../../../api/rule";
+import {Tag} from "antd";
 
 export const getAllColumns: () => ColumnProps<RuleDataProps>[] = () => {
   let allColumns: ColumnProps<RuleDataProps>[] = [
@@ -10,15 +11,23 @@ export const getAllColumns: () => ColumnProps<RuleDataProps>[] = () => {
       title: "状态",
       dataIndex: "enable",
       ellipsis: true,
-      render: (value: boolean) => (value ? "启用" : "禁用")
+      // render: (value: boolean) => (value ? "启用" : "禁用")
+      render: (value: boolean) => {
+        let color = value ? 'green' : 'volcano';
+        let text = value ? "启用" : "禁用"
+        return (
+            <Tag color={color}>{text}</Tag>
+        );
+      }
     },
     {
       title: "poc名称",
       dataIndex: "json_poc",
       ellipsis: false,
+      width: "20%",
       render: (value: any) => value.name
     },
-    { title: "漏洞名", dataIndex: "desp_name", ellipsis: true },
+    { title: "漏洞名称", dataIndex: "desp_name", ellipsis: false },
     {
       title: "影响类型",
       dataIndex: "affects",
@@ -50,4 +59,3 @@ export const richFormColumns: FormColumnProps[] = [
     label: "Exploit"
   }
 ];
-

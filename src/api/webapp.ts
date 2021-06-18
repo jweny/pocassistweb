@@ -38,7 +38,7 @@ export const createProduct = (data: ProductDataProps) => {
  */
 export const deleteProduct = (id: number) => {
   return request({
-    url: `/v1/product/${id}`,
+    url: `/v1/product/${id}/`,
     method: "delete"
   });
 };
@@ -49,7 +49,7 @@ export const deleteProduct = (id: number) => {
  */
 export const updateProduct = (data: ProductDataProps, id: number) => {
   return request({
-    url: `/v1/product/${id}`,
+    url: `/v1/product/${id}/`,
     method: "put",
     data
   });

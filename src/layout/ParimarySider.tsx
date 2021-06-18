@@ -59,10 +59,18 @@ const PrimarySider: React.FC = props => {
       });
   }, []);
   return (
-    <Sider trigger={null} collapsible collapsed={state.collapsed} width={210}>
-        <h2 className="logo">
-            POC ASSIST
-        </h2>
+    <Sider
+      trigger={null}
+      collapsible
+      collapsed={state.collapsed}
+      width={210}
+      style={{
+       height: "100vh",
+       left: 0,
+       overflow: "auto",
+       position: "fixed",}}
+    >
+      <h2 className="logo">POCASSIST</h2>
       <Menu theme="dark" mode="inline" selectedKeys={selected}>
         {submenus}
       </Menu>

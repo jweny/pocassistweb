@@ -12,7 +12,7 @@ export const getAllColumns: () => ColumnProps<VulDataProps>[] = () => {
     { title: "cnnvd编号", dataIndex: "cnnvd", ellipsis: true },
     { title: "修复建议", dataIndex: "suggestion", ellipsis: true },
     {
-      title: "漏洞级别",
+      title: "漏洞等级",
       dataIndex: "severity",
       ellipsis: true,
       render: (value: string) => {
@@ -31,7 +31,7 @@ export const getAllColumns: () => ColumnProps<VulDataProps>[] = () => {
       }
     },
     { title: "漏洞语言", dataIndex: "language", ellipsis: true },
-    { title: "上传者", dataIndex: "writer_name", ellipsis: true },
+    { title: "上传者", dataIndex: "writer_name", ellipsis: true }
   ];
   return allColumns;
 };
@@ -44,6 +44,5 @@ export const richFormColumns: FormColumnProps[] = [
   {
     name: "suggestion",
     label: "修复建议"
-  },
+  }
 ];
-

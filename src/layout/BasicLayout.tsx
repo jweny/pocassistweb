@@ -9,7 +9,6 @@ const BasicLayout: React.FC = props => {
         .filter(item => item?.component)
         .map(route => {
           let PageComponents = route.component;
-          // console.log("PageComponents", PageComponents);
           return (
             <ReactRoute
               exact
