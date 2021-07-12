@@ -143,3 +143,15 @@ export const batchTestList = (data?: any) => {
     data
   });
 };
+
+/**
+ * 下载yaml
+ */
+export const downloadYaml = (data?: any) => {
+  return request({
+    url: `/v1/poc/download/`,
+    method: "post",
+    // responseType: "arraybuffer",
+    data
+  });
+};

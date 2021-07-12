@@ -13,7 +13,6 @@ import {
   getRuleList,
   RuleDataProps
 } from "../../../api/rule";
-import TestModal from "./TestModal";
 
 const VulTable: React.FC<VulComponentProps> = props => {
   const allColumns = getAllColumns();
@@ -26,8 +25,6 @@ const VulTable: React.FC<VulComponentProps> = props => {
   const [selected, setSelected] = useState<RuleDataProps | undefined>(
     undefined
   );
-  // const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
-  // const [batchTestShow, setBatchTestShow] = useState<boolean>(false);
 
   const { state, dispatch } = useContext(RuleContext);
 

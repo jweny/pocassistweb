@@ -34,13 +34,16 @@ service.interceptors.request.use(config => {
   return config;
 });
 service.interceptors.response.use(
-  response => {
-    const body = response.data;
-    if (body && !body.code) {
-      message.error(response.data?.msg || body.error);
-      return Promise.reject();
-    }
-    return body;
+    response => {
+      if (response.data.code !== undefined) {
+        const body = response.data;
+        if (body && !body.code) {
+          message.error(response.data?.msg || body.error);
+          return Promise.reject();
+        }
+        return body;
+      }
+      return response;
   },
   async error => {
     if (error.response?.status === 401) {

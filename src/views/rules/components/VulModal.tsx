@@ -13,22 +13,25 @@ import {
   Select,
   Spin,
   Switch,
-  Tabs
+  Tabs,
+  Upload
 } from "antd";
 import { ModalProps } from "antd/es/modal";
 import { FormColumnProps } from "./SearchForm";
 import RunTest, { getId } from "./RunTest";
 import { getVulList, VulDataProps } from "../../../api/vul";
-import { getUserInfo } from "../../../utils/auth";
+import { getToken, getUserInfo } from "../../../utils/auth";
 import "braft-editor/dist/index.css";
 import {
   createRule,
   getRuleList,
   testRule,
   RuleDataProps,
-  updateRule
+  updateRule,
+  downloadYaml
 } from "../../../api/rule";
 import RuleContext from "../../../store/rule/store";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface AddVulProps extends ModalProps {
   selected?: RuleDataProps;
@@ -71,7 +74,6 @@ const VulModal: React.FC<AddVulProps> = props => {
   }, [selected, type]);
 
   const handleFinish = (val?: any) => {
-    console.log(val);
     setLoading(true);
     const userInfo = getUserInfo();
     const vulApi = ruleData?.id || vulAddId ? updateRule : createRule;
@@ -84,7 +86,7 @@ const VulModal: React.FC<AddVulProps> = props => {
       writer_id: userInfo?.id,
       ...xml
     };
-    console.log(finalData);
+    // console.log(finalData);
     vulApi(finalData, ruleData?.id || vulAddId)
       .then((res: any) => {
         setVulAddId(res?.data?.id);
@@ -104,6 +106,41 @@ const VulModal: React.FC<AddVulProps> = props => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleDownloadYaml = (val?: any) => {
+    const userInfo = getUserInfo();
+
+    // @ts-ignore
+    const xml = testRef.current?.getRunTestData();
+    const finalData: RuleDataProps = {
+      ...ruleData,
+      ...val,
+      writer_id: userInfo?.id,
+      ...xml
+    };
+    console.log(xml);
+    try {
+      downloadYaml(xml).then(res => {
+        // console.log(res);
+        const link = document.createElement("a");
+        const blob = new Blob(["\uFEFF" + res.data], {
+          type: "text/vnd.yaml"
+        });
+        link.style.display = "none";
+        link.href = URL.createObjectURL(blob);
+        let num = "";
+        for (let i = 0; i < 10; i++) {
+          num += Math.ceil(Math.random() * 10);
+        }
+        link.setAttribute("download", num + ".yaml");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleRunTest = (val: any) => {
@@ -234,6 +271,31 @@ const VulModal: React.FC<AddVulProps> = props => {
 
   const height = document.documentElement.offsetHeight;
 
+  const uploadProps: any = {
+    name: "yaml",
+    action: process.env.REACT_APP_BASE_API + "/v1/poc/upload/",
+    headers: {
+      Authorization: `JWT ${getToken()}`
+    },
+    onChange(info: any) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        console.log(info);
+        setRuleData((prev: any) => {
+          return {
+            ...prev,
+            json_poc: info?.file?.response?.data?.json_poc
+          };
+        });
+        message.success(`${info.file.name} 上传成功`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} 上传失败`);
+      }
+    }
+  };
+
   return (
     <Modal
       {...props}
@@ -263,6 +325,24 @@ const VulModal: React.FC<AddVulProps> = props => {
             >
               测试规则
             </Button>
+
+            <div style={{ float: "left", marginLeft: "10px" }}>
+              <Upload {...uploadProps} showUploadList={false}>
+                <Button type="primary">上传yaml</Button>
+              </Upload>
+              <Button
+                  type="primary"
+                  style={{ marginLeft: "10px" }}
+                  onClick={() => {
+                    form.validateFields().then(val => {
+                      handleDownloadYaml(val);
+                    });
+                  }}
+              >
+                下载yaml
+              </Button>
+            </div>
+
             <Button
               type="primary"
               onClick={() => {

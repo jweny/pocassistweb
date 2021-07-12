@@ -200,7 +200,11 @@ const RunTest: React.FC<RunTestProps> = (props, ref) => {
     let json_poc: any = {};
     json_poc.name = formData.name;
     json_poc.set = itemDataFormatter(itemData);
-    json_poc.params = formData.params.replace("，", ",").split(",");
+    // json_poc.params = formData.params.replace("，", ",").split(",");
+    json_poc.params =
+        formData.params.length > 0
+            ? formData.params.replace("，", ",").split(",")
+            : [];
     if (formData.type === "rules") {
       json_poc.rules = groupData[0]?.data?.map((item: any) => {
         const { id, ...rest } = item;
